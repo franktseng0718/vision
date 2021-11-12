@@ -42,7 +42,14 @@ else
   PYTORCH_MUTEX_CONSTRAINT=''
 fi
 
-conda install -yq \pytorch=$PYTORCH_VERSION $CONDA_CUDATOOLKIT_CONSTRAINT $PYTORCH_MUTEX_CONSTRAINT $MKL_CONSTRAINT -c "pytorch-${UPLOAD_CHANNEL}"
+if [[ "$CU_VERSION" == "cu111" ]]; then
+  # cuda-toolkit=11.1 is only available on conda-forge
+  CONDA_EXTRA_FLAGS="-c conda-forge"
+else
+  CONDA_EXTRA_FLAGS=""
+fi
+
+conda install -yq \pytorch=$PYTORCH_VERSION $CONDA_CUDATOOLKIT_CONSTRAINT $PYTORCH_MUTEX_CONSTRAINT $MKL_CONSTRAINT -c "pytorch-${UPLOAD_CHANNEL}" $CONDA_EXTRA_FLAGS
 TORCH_PATH=$(dirname $(python -c "import torch; print(torch.__file__)"))
 
 if [[ "$(uname)" == Darwin || "$OSTYPE" == "msys" ]]; then
