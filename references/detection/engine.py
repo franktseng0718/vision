@@ -7,7 +7,7 @@ import torchvision.models.detection.mask_rcnn
 import utils
 from coco_eval import CocoEvaluator
 from coco_utils import get_coco_api_from_dataset
-
+from torch.optim import lr_scheduler
 
 def train_one_epoch(model, optimizer, data_loader, device, epoch, print_freq):
     model.train()
@@ -20,7 +20,7 @@ def train_one_epoch(model, optimizer, data_loader, device, epoch, print_freq):
         warmup_factor = 1.0 / 1000
         warmup_iters = min(1000, len(data_loader) - 1)
 
-        lr_scheduler = torch.optim.lr_scheduler.LinearLR(
+        lr_scheduler = lr_scheduler.MultiStepLR(
             optimizer, start_factor=warmup_factor, total_iters=warmup_iters
         )
 
