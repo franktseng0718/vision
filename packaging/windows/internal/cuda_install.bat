@@ -190,8 +190,10 @@ if not exist "%SRC_DIR%\temp_build\NvToolsExt.7z" (
 echo Installing CUDA toolkit...
 7z x %CUDA_SETUP_FILE% -o"%SRC_DIR%\temp_build\cuda"
 pushd "%SRC_DIR%\temp_build\cuda"
-start /wait setup.exe -s %ARGS% -loglevel:6 -log:"%cd%/cuda_install_logs"
-echo %errorlevel%
+start /wait setup.exe -s %ARGS% -loglevel:6 -log:"%HOMEPATH%/cuda_install_logs"
+if errorlevel 1 (
+  echo "CUDA installation failed with exit code 1"
+)
 
 popd
 
@@ -222,9 +224,9 @@ set "NVTOOLSEXT_PATH=%ProgramFiles%\NVIDIA Corporation\NvToolsExt\bin\x64"
 if not exist "%ProgramFiles%\NVIDIA GPU Computing Toolkit\CUDA\v%CUDA_VERSION_STR%\bin\nvcc.exe" (
     echo CUDA %CUDA_VERSION_STR% installed failed.
     echo --------- RunDll32.exe.log
-    type "%SRC_DIR%\temp_build\cuda\cuda_install_logs\LOG.RunDll32.exe.log"    
+    type "%HOMEPATH%\cuda_install_logs\LOG.RunDll32.exe.log"
     echo --------- setup.exe.log -------
-    type "%SRC_DIR%\temp_build\cuda\cuda_install_logs\LOG.setup.exe.log"
+    type "%HOMEPATH%\cuda_install_logs\LOG.setup.exe.log"
     exit /b 1
 )
 
