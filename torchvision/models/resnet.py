@@ -152,6 +152,7 @@ class Bottleneck(nn.Module):
         self.conv3 = conv1x1(width, planes * self.expansion)
         self.bn3 = norm_layer(planes * self.expansion)
         self.relu = nn.ReLU(inplace=True)
+        self.se = SELayer(planes * self.expansion, reduction=16)
         self.downsample = downsample
         self.stride = stride
 
@@ -168,7 +169,7 @@ class Bottleneck(nn.Module):
 
         out = self.conv3(out)
         out = self.bn3(out)
-
+        out = self.se(out)
         if self.downsample is not None:
             identity = self.downsample(x)
 
